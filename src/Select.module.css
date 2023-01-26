@@ -1,5 +1,84 @@
 .container{
-  background-color: red;
-  width: 100px;
-  height: 100px;
+  width: 20em;
+  min-height: 1.5em;
+  padding: .5em;
+
+  border: .05em solid #777;
+  border-radius: .24em;
+  outline: none;
+
+  position: relative;
+
+  display: flex;
+  align-items: center;
+  gap: .5em;
 }
+
+.container:focus{
+  border-color: hsl(200, 100%, 50%);
+}
+
+.value{
+  flex-grow: 1;
+}
+
+.clear-btn{
+  padding: 0;
+  font-size: 1.25em;
+  background: none;
+  color: #777;
+  border: none;
+  outline: none;
+  cursor: pointer;
+}
+
+.clear-btn:focus,
+.clear-btn:hover{
+  color: #333;
+}
+
+.divider{
+  width: .05em;
+  background-color: #777;
+  align-self: stretch;
+}
+
+.caret{
+  border: .25em solid transparent;
+  border-top-color: #777;
+  translate: 0 25%;
+}
+
+.options{
+  width: 100%;
+  max-height: 15em;
+  margin: 0;
+  padding: 0;
+  overflow-y: auto;
+  list-style: none;
+  display: none;
+  border: .05em solid #777;
+  border-radius: .25em;
+  position: absolute;
+  left: 0;
+  top: calc(100% + .25em);
+  background-color: white;
+  z-index: 100;
+}
+
+.options.show{
+  display: block;
+}
+
+.option{
+  padding: .25em .5em;
+  cursor: pointer;
+}
+.option.selected{
+  background-color: hsl(200, 100%, 70%);
+}
+.option:hover{
+  background-color: hsl(200, 100%, 50%);
+  color: white;
+}
+
