@@ -1,4 +1,4 @@
-import { SyntheticEvent, useState } from 'react'
+import { SyntheticEvent, useEffect, useRef, useState } from 'react'
 import s from "./Select.module.css"
 
 type SelectOption = {
@@ -24,6 +24,25 @@ type SelectProps = {
 
 const Select = ({multiple, value, onChange, options}: SelectProps) => {
   const [isOpen, setIsOpen] = useState(false)
+
+  const containerRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    const handler = (e: KeyboardEvent) => {
+      if(e.target != containerRef.current) return
+
+      switch(e.code){
+        case "Enter":
+          case "Space":
+            setIsOpen(prev => !prev)
+            break
+      }
+    }
+
+    containerRef.current?.addEventListener("keydown", handler)
+
+    return () => containerRef.current?.removeEventListener("keydown", handler)
+  }, [])
 
   function clearOptions(e: SyntheticEvent){
     e.stopPropagation()
@@ -51,6 +70,7 @@ const Select = ({multiple, value, onChange, options}: SelectProps) => {
 
   return (
     <div 
+      ref={containerRef}
       onClick={() => setIsOpen(prev => !prev)} 
       onBlur={() => setIsOpen(false)} 
       tabIndex={0} 
