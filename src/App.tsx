@@ -30,9 +30,12 @@ const options: Option[] = [
 ]
 
 function App() {
-  const [value, setValue] = useState<typeof options[0] | undefined>(options[0]);
-  
+  const [value, setValue] = useState<Option | undefined>(options[0]);
+  const [values, setValues] = useState<Option[]>([options[0]])
+
   return (<>
+    <Select multiple options={options} value={values} onChange={o => setValues(o as [])}/>
+    <br></br>
     <Select options={options} value={value} onChange={o => setValue(o)}/>
   </>)
 }

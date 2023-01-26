@@ -6,28 +6,48 @@ type SelectOption = {
   value: string | number
 }
 
-type SelectProps = {
-  options: SelectOption[]
+type SingleSelectProps = {
+  multiple?: false
   value?: SelectOption | undefined                                // current selected option
-  onChange: (value: SelectOption | undefined) => void
+  onChange: (value: SelectOption | undefined) => void             // set the current option
 }
 
-const Select = ({value, onChange, options}: SelectProps) => {
+type MultipleSelectProps = {
+  multiple: true
+  value?: SelectOption[] | undefined                                // current selected options
+  onChange: (value: SelectOption[] | undefined) => void
+}
+
+type SelectProps = {
+  options: SelectOption[]
+} & (SingleSelectProps | MultipleSelectProps)
+
+const Select = ({multiple, value, onChange, options}: SelectProps) => {
   const [isOpen, setIsOpen] = useState(false)
 
   function clearOptions(e: SyntheticEvent){
     e.stopPropagation()
-    onChange(undefined)
+    
+    if(multiple) onChange([])
+    else onChange(undefined)
   }
 
   function choose(option: SelectOption){
-    if(option !== value) {
-      onChange(option)
-      setIsOpen(false)
+    if(multiple){
+      if(value?.includes(option)){
+        onChange(value.filter(op => op !== option))
+      }else{
+        onChange([...value as [], option])
+      }
+    }else{
+      if(option !== value) {
+        onChange(option)
+        setIsOpen(false)
+      }
     }
   }
 
-  const isOptionSelected = (option: SelectOption) => option === value
+  const isOptionSelected = (option: SelectOption) => multiple ? value?.includes(option) : option === value
 
   return (
     <div 
@@ -36,7 +56,20 @@ const Select = ({value, onChange, options}: SelectProps) => {
       tabIndex={0} 
       className={s.container}
     >
-      <span className={s.value}>{value?.label}</span>
+      <span className={s.value}>
+        {multiple ? (
+          value?.map(v => (
+            <button 
+              key={v.value} 
+              className={`${s["option-badge"]}`}
+              onClick={e => {
+                e.stopPropagation()
+                choose(v)
+              }
+            }>{v.label} <span className={`${s["remove-btn"]}`}>&times;</span>
+            </button>
+          ))
+        ) : value?.label}</span>
       <button className={s["clear-btn"]} onClick={clearOptions}>&times;</button>
 
       <div className={s.divider}></div>
